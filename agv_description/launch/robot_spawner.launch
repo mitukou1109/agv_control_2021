@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="robot_name"/>
+  <arg name="robot_type"/>
+  <arg name="enable_odom_tf"/>
+  <arg name="world_name" default="worlds/empty.world"/>
+  <arg name="initial_pose" default="-x 0 -y 0 -z 0 -R 0 -P 0 -Y 0"/>
+  <arg name="robot_xacro" value="$(find agv_description)/robots/$(arg robot_type).urdf.xacro"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_name)"/>
+  </include>
+
+  <group ns="$(arg robot_name)">
+    <rosparam command="load" file="$(find agv_description)/config/$(arg robot_type).yaml" subst_value="true"/>
+    <param name="robot_description" command="$(find xacro)/xacro '$(arg robot_xacro)' robot_name:=$(arg robot_name)"/>
+
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" output="screen"
+          args="-param robot_description -urdf -model $(arg robot_name) $(arg initial_pose)"/>
+    
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="diff_drive_controller"/>
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
+      <param name="tf_prefix" value="$(arg robot_name)"/>
+    </node>
+  </group>
+</launch>

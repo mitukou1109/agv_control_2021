@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="robot_name" value="agv"/>
+  <arg name="rvizconfig" value="$(find agv_simulation)/rviz/path_following.rviz"/>
+  <arg name="config_dir" value="$(find agv_simulation)/config"/>
+
+  <arg name="map_frame" value="$(arg robot_name)/map"/>
+  <arg name="odom_frame" value="$(arg robot_name)/odom"/>
+  <arg name="robot_base_frame" value="$(arg robot_name)/base_link"/>
+  <arg name="coupler_frame" value="$(arg robot_name)/cart_rev_link"/>
+  <arg name="cart_base_frame" value="$(arg robot_name)/cart_body_link"/>
+
+  <!-- AGV単体の場合はWYN_200_single、AGV+トレーラの場合はWYN_200_towing -->
+  <arg name="robot_type" value="WYN_200_towing"/>
+  <arg name="towing" value="true"/>
+
+  <!-- 自作ワールド名 -->
+  <arg name="world_type" value="custom_2"/>
+  <!-- 自作ワールドを使う場合は$(arg map_frame)、使わない場合は$(arg odom_frame) -->
+  <arg name="global_frame" value="$(arg odom_frame)"/>
+  
+  <include file="$(find agv_description)/launch/robot_spawner.launch">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="robot_type" value="$(arg robot_type)"/>
+    <arg name="enable_odom_tf" value="false"/>
+
+    <!-- 自作ワールドを使う場合は下行のコメントアウトを解除 -->
+    <!-- <arg name="world_name" value="$(find agv_simulation)/worlds/$(arg world_type).world"/> -->
+  </include>
+
+  <group ns="$(arg robot_name)">
+    <!-- 自作ワールドを使う場合は下8行のコメントアウトを解除 -->
+    <!-- <node pkg="amcl" type="amcl" name="amcl" clear_params="true">
+      <rosparam command="load" file="$(arg config_dir)/amcl.yaml" subst_value="true"/>
+      <remap from="scan" to="slam_lidar/scan"/>
+    </node>
+
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find agv_simulation)/models/$(arg world_type)/$(arg world_type).yaml">
+      <param name="frame_id" value="$(arg robot_name)/map"/>
+    </node> -->
+
+    <node name="ekf_localization" pkg="robot_localization" type="ekf_localization_node" clear_params="true" output="screen">
+      <rosparam file="$(arg config_dir)/ekf_localization.yaml" command="load" subst_value="true"/>
+      <remap from="odometry/filtered" to="ekf_localization/odom"/>
+    </node>
+
+    <group if="$(arg towing)">
+      <node name="laser_filter_cart" pkg="laser_filters" type="scan_to_scan_filter_chain">
+        <rosparam file="$(arg config_dir)/scan_filter_cart.yaml" command="load" subst_value="true"/>
+        <remap from="scan" to="rear_lidar/scan"/>
+        <remap from="scan_filtered" to="rear_lidar/scan_filtered/cart"/>
+      </node>
+  
+      <node name="line_extraction_node" pkg="laser_line_extraction" type="line_extraction_node">
+        <rosparam file="$(arg config_dir)/laser_line_extraction.yaml" command="load" subst_value="true"/>
+        <remap from="line_segments" to="cart_lines"/>
+      </node>
+  
+      <node name="cart_yaw_publisher" pkg="agv_navigation" type="cart_yaw_publisher"/>
+    </group>
+
+    <node name="path_generator" pkg="agv_navigation" type="path_generator" output="screen">
+      <rosparam file="$(arg config_dir)/path_generator.yaml" command="load" subst_value="true"/>
+    </node>
+
+    <node name="path_following_controller" pkg="agv_navigation" type="path_following_controller" output="screen">
+      <rosparam file="$(arg config_dir)/path_following_controller.yaml" command="load" subst_value="true"/>
+      <remap from="path_following_controller/cmd_vel" to="diff_drive_controller/cmd_vel"/>
+    </node>
+  </group>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true">
+    <param name="navigation_service_prefix" value="$(arg robot_name)"/>
+    <param name="robot_name" value="$(arg robot_name)"/>
+    <param name="global_frame" value="$(arg global_frame)"/>
+    <param name="robot_base_frame" value="$(arg robot_base_frame)"/>
+    <param name="cart_rev_link_frame" value="$(arg coupler_frame)"/>
+    <remap from="initialpose" to="$(arg robot_name)/initialpose"/>
+  </node>
+
+  <node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" launch-prefix="bash -c 'sleep 3.0; $0 $@' "/>
+</launch>

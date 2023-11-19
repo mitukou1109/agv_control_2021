@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="coupler" params="parent *joint_origin">
+    <xacro:body prefix="coupler" parent="${parent}" mesh="WYN_200_coupler" color="Black">
+      <xacro:insert_block name="joint_origin"/>
+      <inertial>
+        <origin xyz="-0.0601 0 0.0166"/>
+        <mass value="1.23"/>
+        <inertia ixx="4.98e-3" ixy="-1.35e-14" ixz="-3.76e-4" iyy="5.67e-3" iyz="2.27e-15" izz="9.98e-3"/>
+      </inertial>
+    </xacro:body>
+  </xacro:macro>
+</robot>

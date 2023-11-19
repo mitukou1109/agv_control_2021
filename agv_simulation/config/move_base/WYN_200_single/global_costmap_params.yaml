@@ -1,0 +1,5 @@
+global_costmap:
+  global_frame: $(arg robot_name)/map
+  inflation_radius: 0.8
+  update_frequency: 1.0
+  static_map: true

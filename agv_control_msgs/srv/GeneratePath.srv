@@ -1,0 +1,8 @@
+float64 path_resolution
+float64 arc_curvature
+float64 arc_angle
+float64 line_length
+float64 line_angle
+uint8 path_direction
+---
+nav_msgs/Path path

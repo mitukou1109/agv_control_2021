@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="lidar" params="prefix parent view_angle min_range max_range visualize:='false' *joint_origin">
+    <link name="${prefix}_lidar_link">
+      <visual>
+        <geometry>
+          <cylinder radius="0.03" length="0.08"/>
+        </geometry>
+        <material name="Blue"/>
+      </visual>
+      <inertial>
+        <origin xyz="0 0 0"/>
+        <mass value="0.2"/>
+        <inertia ixx="0.00038" ixy="0" ixz="0" iyy="0.00038" iyz="0" izz="0.00023"/>
+      </inertial>
+    </link>
+    <joint name="${prefix}_lidar_joint" type="fixed">
+      <xacro:insert_block name="joint_origin"/>
+      <parent link="${parent}"/>
+      <child link="${prefix}_lidar_link"/>
+    </joint>
+    <gazebo reference="${prefix}_lidar_link">
+      <material>Gazebo/Blue</material>
+      <sensor type="ray" name="${prefix}_lidar">
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>${visualize}</visualize>
+        <update_rate>10</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>300</samples>
+              <resolution>1</resolution>
+              <min_angle>${radians(-view_angle/2)}</min_angle>
+              <max_angle>${radians(view_angle/2)}</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>${min_range}</min>
+            <max>${max_range}</max>
+            <resolution>0.01</resolution>
+          </range>
+        </ray>
+        <plugin name="gazebo_ros_lidar_controller" filename="libgazebo_ros_laser.so">
+          <topicName>/$(arg robot_name)/${prefix}_lidar/scan</topicName>
+          <frameName>$(arg robot_name)/${prefix}_lidar_link</frameName>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>

@@ -1,0 +1,17 @@
+nav_msgs/Path path
+uint8 following_mode
+bool clear_trajectory
+---
+---
+time stamp
+float64 e_1
+float64 theta_1
+float64 e_2
+float64 theta_2
+float64 kappa_1
+float64 kappa_2
+float64 beta_1
+float64 beta_2
+float64 psi
+float64 delta
+geometry_msgs/Twist cmd_vel

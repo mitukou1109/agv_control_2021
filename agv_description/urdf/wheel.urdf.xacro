@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="wheel" params="prefix parent radius width mass *joint_origin *joint_axis">
+    <link name="${prefix}_wheel_link">
+      <visual>
+        <geometry>
+          <cylinder radius="${radius}" length="${width}"/>
+        </geometry>
+        <material name="Red"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="${radius}" length="${width}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0 0 0"/>
+        <mass value="${mass}"/>
+        <inertia ixx="${mass*(radius**2/4+width**2/12)}" ixy="0" ixz="0" iyy="${mass*(radius**2/4+width**2/12)}" iyz="0" izz="${mass*radius**2/2}"/>
+      </inertial>
+    </link>
+    <joint name="${prefix}_wheel_joint" type="continuous">
+      <xacro:insert_block name="joint_origin"/>
+      <xacro:insert_block name="joint_axis"/>
+      <parent link="${parent}"/>
+      <child link="${prefix}_wheel_link"/>
+    </joint>
+    <transmission name="${prefix}_wheel_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}_wheel_joint">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}_wheel_motor">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+    <gazebo reference="${prefix}_wheel_link">
+      <material>Gazebo/Red</material>
+      <mu1 value="1"/>
+      <mu2 value="1"/>
+      <kp value="1000000"/>
+      <kd value="100000"/>
+      <dampingFactor value="0.4"/>
+    </gazebo>
+  </xacro:macro>
+</robot>

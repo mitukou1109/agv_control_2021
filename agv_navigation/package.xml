@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>agv_navigation</name>
+  <version>1.0.0</version>
+  <description>AGV Navigation</description>
+  <maintainer email="msakamoto@nitnc.net">Mitsuhiro Sakamoto</maintainer>
+  <license>BSD</license>
+  <build_depend>qtbase5-dev</build_depend>
+  <build_depend>rviz</build_depend>
+  <depend>dynamic_reconfigure</depend>
+  <depend>eigen</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>tf2</depend>
+  <depend>jsk_rviz_plugins</depend>
+  <depend>laser_line_extraction</depend>
+  <depend>agv_control_msgs</depend>  
+  <depend>agv_control_lib</depend>
+  <exec_depend>libqt5-core</exec_depend>
+  <exec_depend>libqt5-gui</exec_depend>
+  <exec_depend>libqt5-widgets</exec_depend>
+  <exec_depend>move_base</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <buildtool_depend>catkin</buildtool_depend>
+  <export>
+    <rviz plugin="${prefix}/navigation_control_panel_plugin.xml"/>
+  </export>
+</package>

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="robot_name" value="agv"/>
+  <arg name="rvizconfig" value="$(find agv_simulation)/rviz/navigation.rviz"/>
+  <arg name="config_dir" value="$(find agv_simulation)/config"/>
+
+  <arg name="robot_type" value="WYN_200_towing"/>
+  <arg name="world_type" value="custom_2"/>
+  <arg name="map_frame" value="$(arg robot_name)/map"/>
+  <arg name="odom_frame" value="$(arg robot_name)/odom"/>
+  <arg name="global_frame" value="$(arg map_frame)"/>
+  <arg name="robot_base_frame" value="$(arg robot_name)/base_link"/>
+  <arg name="coupler_frame" value="$(arg robot_name)/cart_rev_link"/>
+  <arg name="cart_base_frame" value="$(arg robot_name)/cart_body_link"/>
+
+  <include file="$(find agv_description)/launch/robot_spawner.launch">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="robot_type" value="$(arg robot_type)"/>
+    <arg name="world_name" value="$(find agv_simulation)/worlds/$(arg world_type).world"/>
+    <arg name="enable_odom_tf" value="false"/>
+  </include>
+
+  <group ns="$(arg robot_name)">
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find agv_simulation)/models/$(arg world_type)/$(arg world_type).yaml">
+      <param name="frame_id" value="$(arg robot_name)/map"/>
+    </node>
+  
+    <node pkg="amcl" type="amcl" name="amcl" clear_params="true">
+      <rosparam command="load" file="$(arg config_dir)/amcl.yaml" subst_value="true"/>
+      <remap from="scan" to="slam_lidar/scan"/>
+    </node>
+
+    <node name="move_base" pkg="move_base" type="move_base" output="screen" clear_params="true">
+      <rosparam file="$(arg config_dir)/move_base/$(arg robot_type)/move_base_params.yaml" command="load"/>
+      <rosparam file="$(arg config_dir)/move_base/$(arg robot_type)/costmap_common_params.yaml" command="load" ns="global_costmap" subst_value="true"/>
+      <rosparam file="$(arg config_dir)/move_base/$(arg robot_type)/costmap_common_params.yaml" command="load" ns="local_costmap" subst_value="true"/>
+      <rosparam file="$(arg config_dir)/move_base/$(arg robot_type)/global_costmap_params.yaml" command="load" subst_value="true"/>
+      <rosparam file="$(arg config_dir)/move_base/$(arg robot_type)/local_costmap_params.yaml"  command="load" subst_value="true"/>
+      <rosparam file="$(arg config_dir)/move_base/$(arg robot_type)/base_local_planner_params.yaml" command="load" subst_value="true"/>
+      <remap from="cmd_vel" to="diff_drive_controller/cmd_vel"/>
+    </node>
+
+    <node name="ekf_localization" pkg="robot_localization" type="ekf_localization_node" clear_params="true" output="screen">
+      <rosparam file="$(arg config_dir)/ekf_localization.yaml" command="load" subst_value="true"/>
+      <remap from="odometry/filtered" to="ekf_localization/odom"/>
+    </node>
+
+    <group if="$(eval robot_type=='WYN_200_towing')">
+      <node name="laser_filter_cart" pkg="laser_filters" type="scan_to_scan_filter_chain">
+        <rosparam file="$(arg config_dir)/scan_filter_cart.yaml" command="load" subst_value="true"/>
+        <remap from="scan" to="rear_lidar/scan"/>
+        <remap from="scan_filtered" to="rear_lidar/scan_filtered/cart"/>
+      </node>
+      
+      <node name="laser_filter_costmap" pkg="laser_filters" type="scan_to_scan_filter_chain">
+        <rosparam file="$(arg config_dir)/scan_filter_costmap.yaml" command="load" subst_value="true"/>
+        <remap from="scan" to="rear_lidar/scan"/>
+        <remap from="scan_filtered" to="rear_lidar/scan_filtered/costmap"/>
+      </node>
+  
+      <node name="line_extraction_node" pkg="laser_line_extraction" type="line_extraction_node">
+        <rosparam file="$(arg config_dir)/laser_line_extraction.yaml" command="load" subst_value="true"/>
+        <remap from="line_segments" to="cart_lines"/>
+      </node>
+  
+      <node name="cart_yaw_publisher" pkg="agv_navigation" type="cart_yaw_publisher"/>
+    </group>
+  </group>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true">
+    <remap from="move_base_simple/goal" to="$(arg robot_name)/move_base_simple/goal"/>
+    <remap from="initialpose" to="$(arg robot_name)/initialpose"/>
+  </node>
+
+  <node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" launch-prefix="bash -c 'sleep 5.0; $0 $@' "/>
+</launch>

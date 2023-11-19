@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>towable_local_planner</name>
+  <version>1.0.0</version>
+  <description>Towable Local Planner</description>
+  <maintainer email="msakamoto@nitnc.net">Mitsuhiro Sakamoto</maintainer>
+  <license>BSD</license>
+  <depend>base_local_planner</depend>
+  <depend>costmap_2d</depend>
+  <depend>dynamic_reconfigure</depend>
+  <depend>eigen</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_core</depend>
+  <depend>nav_msgs</depend>
+  <depend>pluginlib</depend>
+  <depend>std_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>agv_control_lib</depend>
+  <depend>agv_control_msgs</depend>
+  <buildtool_depend>catkin</buildtool_depend>
+  <export>
+    <nav_core plugin="${prefix}/towable_local_planner_plugin.xml"/>
+  </export>
+</package>

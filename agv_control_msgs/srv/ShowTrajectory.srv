@@ -1,0 +1,3 @@
+---
+nav_msgs/Path robot_trajectory
+nav_msgs/Path cart_trajectory

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="imu" params="parent *joint_origin">
+    <link name="imu_link"/>
+    <joint name="imu_joint" type="fixed">
+      <xacro:insert_block name="joint_origin"/>
+      <parent link="${parent}"/>
+      <child link="imu_link"/>
+    </joint>
+    <gazebo reference="imu_link">
+      <gravity>true</gravity>
+      <sensor name="imu_sensor" type="imu">
+        <always_on>true</always_on>
+        <update_rate>100</update_rate>
+        <visualize>true</visualize>
+        <topic>__default_topic__</topic>
+        <pose>0 0 0 0 0 0</pose>
+        <plugin name="gazebo_ros_imu_sensor" filename="libgazebo_ros_imu_sensor.so">
+          <topicName>imu/data</topicName>
+          <bodyName>$(arg robot_name)/imu_link</bodyName>
+          <frameName>$(arg robot_name)/imu_link</frameName>
+          <updateRateHZ>10.0</updateRateHZ>
+          <gaussianNoise>0</gaussianNoise>
+          <xyzOffset>0 0 0</xyzOffset>
+          <rpyOffset>0 0 0</rpyOffset>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>

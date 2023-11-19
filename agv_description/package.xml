@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>agv_description</name>
+  <version>1.0.0</version>
+  <description>AGV Description</description>
+  <maintainer email="msakamoto@nitnc.net">Mitsuhiro Sakamoto</maintainer>
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+</package>

@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="WYN_200" params="parent *joint_origin">
+    <xacro:body prefix="agv" parent="${parent}" mesh="WYN_200" color="Green">
+      <xacro:insert_block name="joint_origin"/>
+      <inertial>
+        <origin xyz="0.00965 0 0.202"/>
+        <mass value="180"/>
+        <inertia ixx="1.17e+1" ixy="-1.25e-4" ixz="3.60e-1" iyy="1.62e+1" iyz="1.07e-4" izz="2.00e+1"/>
+      </inertial>
+    </xacro:body>
+    <xacro:wheel prefix="agv_left" parent="agv_body_link" radius="0.065" width="0.042" mass="0.78">
+      <origin xyz="0 0.22 0.035" rpy="${radians(-90)} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </xacro:wheel>
+    <xacro:wheel prefix="agv_right" parent="agv_body_link" radius="0.065" width="0.042" mass="0.78">
+      <origin xyz="0 -0.22 0.035" rpy="${radians(-90)} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </xacro:wheel>
+    <xacro:caster prefix="agv_front_left" parent="agv_body_link" radius="0.05" width="0.035" mass="0.38">
+      <origin xyz="0.235 0.22 0.022" rpy="${radians(-90)} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </xacro:caster>
+    <xacro:caster prefix="agv_front_right" parent="agv_body_link" radius="0.05" width="0.035" mass="0.38">
+      <origin xyz="0.235 -0.22 0.022" rpy="${radians(-90)} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </xacro:caster>
+    <xacro:caster prefix="agv_rear_left" parent="agv_body_link" radius="0.05" width="0.035" mass="0.38">
+      <origin xyz="-0.285 0.22 0.022" rpy="${radians(-90)} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </xacro:caster>
+    <xacro:caster prefix="agv_rear_right" parent="agv_body_link" radius="0.05" width="0.035" mass="0.38">
+      <origin xyz="-0.285 -0.22 0.022" rpy="${radians(-90)} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </xacro:caster>
+    <xacro:lidar prefix="slam" parent="agv_body_link" view_angle="265" min_range="0.1" max_range="30">
+      <origin xyz="0.37 0 0.27" rpy="0 0 0"/>
+    </xacro:lidar>
+    <xacro:lidar prefix="front" parent="agv_body_link" view_angle="135" min_range="0.1" max_range="30">
+      <origin xyz="0.40 0 0.09" rpy="0 0 0"/>
+    </xacro:lidar>
+    <xacro:lidar prefix="rear" parent="agv_body_link" view_angle="180" min_range="0.01" max_range="30" visualize="false">
+      <origin xyz="-0.40 0 0.09" rpy="0 0 ${radians(-180)}"/>
+    </xacro:lidar>
+    <xacro:imu parent="agv_body_link">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:imu>
+  </xacro:macro>
+</robot>

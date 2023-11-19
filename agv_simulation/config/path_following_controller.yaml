@@ -1,0 +1,22 @@
+vel_x_forward: 0.1
+vel_x_backward: 0.1
+vel_theta_max: 0.5
+
+distance_error_weight_1_f: 1.0
+yaw_error_weight_1_f: 0.2
+distance_error_weight_2_f: 0.2
+yaw_error_weight_2_f: 0.2
+distance_error_weight_1_b: 0.6
+yaw_error_weight_1_b: 0.2
+distance_error_weight_2_b: 1.0
+yaw_error_weight_2_b: 0.6
+rot_vel_weight: 0.2
+rot_vel_var_weight: 0.2
+control_period: 0.1
+prediction_horizon: 3.0
+
+towing: $(arg towing)
+global_frame: $(arg global_frame)
+robot_base_frame: $(arg robot_base_frame)
+cart_base_frame: $(arg cart_base_frame)
+coupler_frame: $(arg coupler_frame)

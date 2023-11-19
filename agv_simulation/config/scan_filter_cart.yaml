@@ -1,0 +1,21 @@
+scan_filter_chain:
+- name: angle
+  type: laser_filters/LaserScanAngularBoundsFilter
+  params:
+    lower_angle: -1.18 # -0.26
+    upper_angle: 1.18 # 0.26
+- name: range
+  type: laser_filters/LaserScanRangeFilter
+  params:
+    lower_threshold: 0.01
+    upper_threshold: 0.5
+- name: box
+  type: laser_filters/LaserScanBoxFilter
+  params:
+    box_frame: $(arg robot_name)/agv_body_link
+    min_x: -0.425
+    max_x: 0
+    min_y: -0.325
+    max_y: 0.325
+    min_z: 0
+    max_z: 0.5

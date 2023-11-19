@@ -1,0 +1,5 @@
+<library path="lib/libnavigation_control_panel">
+  <class name="agv_navigation/NavigationControlPanel" type="agv_navigation::NavigationControlPanel" base_class_type="rviz::Panel">
+    <description>Navigation control panel</description>
+  </class>
+</library>

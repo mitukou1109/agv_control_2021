@@ -1,0 +1,7 @@
+<library path="lib/libtowable_local_planner">
+  <class name="towable_local_planner/TowableLocalPlanner" type="towable_local_planner::TowableLocalPlanner" base_class_type="nav_core::BaseLocalPlanner">
+    <description>
+      An implementation of a local planner for towing vehicle
+    </description>
+  </class>
+</library>

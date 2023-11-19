@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<robot name="$(arg robot_name)" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find agv_description)/urdf/common.urdf.xacro"/>
+  <xacro:include filename="$(find agv_description)/urdf/body.urdf.xacro"/>
+  <xacro:include filename="$(find agv_description)/urdf/wheel.urdf.xacro"/>
+  <xacro:include filename="$(find agv_description)/urdf/caster.urdf.xacro"/>
+  <xacro:include filename="$(find agv_description)/urdf/lidar.urdf.xacro"/>
+  <xacro:include filename="$(find agv_description)/urdf/imu.urdf.xacro"/>
+  <xacro:include filename="$(find agv_description)/urdf/WYN_200.urdf.xacro"/>
+  <link name="base_link"/>
+  <xacro:WYN_200 parent="base_link">
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
+  </xacro:WYN_200>
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>$(arg robot_name)</robotNamespace>
+    </plugin>
+    <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+      <robotNamespace>$(arg robot_name)</robotNamespace>
+      <jointName>
+        agv_left_wheel_joint,
+        agv_right_wheel_joint,
+        agv_front_left_caster_joint,
+        agv_front_right_caster_joint,
+        agv_rear_left_caster_joint,
+        agv_rear_right_caster_joint
+      </jointName>
+    </plugin>
+  </gazebo>
+</robot>

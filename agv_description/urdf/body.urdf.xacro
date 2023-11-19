@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="body" params="prefix parent mesh color joint_type:='fixed' geometry_rpy:='0 0 0' *joint_origin **inertial">
+    <xacro:property name="mesh_path" value="package://agv_description/meshes/${mesh}.stl"/>
+    <link name="${prefix}_body_link">
+      <visual>
+        <geometry>
+          <mesh filename="${mesh_path}"/>
+        </geometry>
+        <origin rpy="${geometry_rpy}"/>
+        <material name="${color}"/>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="${mesh_path}"/>
+        </geometry>
+        <origin rpy="${geometry_rpy}"/>
+      </collision>
+      <inertial>
+        <xacro:insert_block name="inertial"/>
+      </inertial>
+    </link>
+    <joint name="${prefix}_body_joint" type="${joint_type}">
+      <xacro:insert_block name="joint_origin"/>
+      <axis xyz="0 0 1"/>
+      <parent link="${parent}"/>
+      <child link="${prefix}_body_link"/>
+    </joint>
+    <gazebo reference="${prefix}_body_link">
+      <material>Gazebo/${color}</material>
+      <mu1 value="0.01"/>
+      <mu2 value="0.01"/>
+      <selfCollide value="true"/>
+    </gazebo>
+  </xacro:macro>
+</robot>

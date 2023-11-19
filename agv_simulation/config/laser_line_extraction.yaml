@@ -1,0 +1,6 @@
+frame_id: $(arg robot_name)/rear_lidar_link
+scan_topic: rear_lidar/scan_filtered/cart
+publish_markers: true
+min_line_length: 0.1
+min_range: 0.01
+max_range: 0.5

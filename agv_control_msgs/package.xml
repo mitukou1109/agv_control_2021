@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>agv_control_msgs</name>
+  <version>1.0.0</version>
+  <description>Message definitions for AGV Control 2021</description>
+  <maintainer email="msakamoto@nitnc.net">Mitsuhiro Sakamoto</maintainer>
+  <license>BSD</license>
+  <depend>actionlib</depend>
+  <depend>dynamic_reconfigure</depend>
+  <depend>geometry_msgs</depend>
+  <depend>message_generation</depend>
+  <depend>nav_msgs</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <exec_depend>message_runtime</exec_depend>
+  <buildtool_depend>catkin</buildtool_depend>
+</package>

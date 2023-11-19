@@ -1,0 +1,41 @@
+<!-- 没 -->
+<?xml version="1.0"?>
+<launch>
+  <arg name="rvizconfig" default="$(find agv_simulation)/rviz/jackknife_prevention.rviz"/>
+  <arg name="robot_name" default="agv"/>
+  <arg name="robot_type" default="WYN_200_towing"/>
+  <arg name="enable_odom_tf" default="true"/>
+  
+  <include file="$(find agv_description)/launch/robot_spawner.launch">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="robot_type" value="$(arg robot_type)"/>
+    <arg name="enable_odom_tf" value="$(arg enable_odom_tf)"/>
+  </include>
+
+  <group ns="$(arg robot_name)">
+    <node name="laser_filter" pkg="laser_filters" type="scan_to_scan_filter_chain">
+      <rosparam command="load" file="$(find agv_simulation)/config/scan_filter_chain.yaml" subst_value="true"/>
+      <remap from="scan" to="rear_lidar/scan"/>
+      <remap from="scan_filtered" to="rear_lidar/scan_filtered"/>
+    </node>
+
+    <node name="line_extraction_node" pkg="laser_line_extraction" type="line_extraction_node" output="screen">
+      <remap from="line_segments" to="cart_lines"/>
+      <rosparam command="load" file="$(find agv_simulation)/config/laser_line_extraction.yaml" subst_value="true"/>
+    </node>
+  
+    <node name="cart_yaw_publisher" pkg="agv_navigation" type="cart_yaw_publisher" output="screen"/>
+
+    <node name="jackknife_prevention" pkg="agv_navigation" type="jackknife_prevention" output="screen">
+      <remap from="cmd_vel" to="diff_drive_controller/cmd_vel"/>
+      <param name="yaw_thresh" value="0"/>
+      <param name="Kp" value="1.8"/>
+      <param name="Ki" value="0"/>
+      <param name="Kd" value="0.1"/>
+    </node>
+  </group>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
+
+  <node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure"/>
+</launch>

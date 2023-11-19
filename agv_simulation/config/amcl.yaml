@@ -1,0 +1,11 @@
+base_frame_id  : $(arg robot_base_frame)
+odom_frame_id  : $(arg odom_frame)
+global_frame_id: $(arg map_frame)
+
+max_particles: 3000
+min_particles: 500
+
+transform_tolerance: 0.5
+
+use_map_topic: true
+first_map_only: false

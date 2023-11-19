@@ -1,0 +1,61 @@
+TrajectoryPlannerROS:
+  max_vel_x: 0.5
+  min_vel_x: 0.1
+  max_vel_theta: 0.5
+  min_vel_theta: -0.5
+  min_in_place_vel_theta: 0.1
+  acc_lim_theta: 0.3
+  acc_lim_x: 0.3
+
+  yaw_goal_tolerance: 0.05 # default: 0.05[rad]
+  xy_goal_tolerance: 0.10 # default: 0.10[m]
+
+  meter_scoring: true # default: false
+  path_distance_bias: 1.0
+  holonomic_robot: false
+
+TebLocalPlannerROS:
+  odom_topic: ekf_localization/odom
+  map_frame : $(arg map_frame)
+
+  max_vel_x: 0.5
+  max_vel_x_backwards: 0.3
+  max_vel_theta: 0.5
+  acc_lim_theta: 0.3
+  acc_lim_x: 0.3
+  min_turning_radius: 1.5 # L_1: 574mm, H_1: 993mm -> 3.72
+
+  footprint_model:
+    type: polygon
+    vertices: [[0.419, 0.319], [-0.419, 0.319], [-0.419, -0.319], [0.419, -0.319]]
+
+  xy_goal_tolerance: 0.1
+  yaw_goal_tolerance: 0.05
+
+  global_plan_overwrite_orientation: true # default: true
+
+  min_obstacle_dist: 0.1
+
+TowableLocalPlanner:
+  vel_x_forward: 0.1
+  vel_x_backward: 0.1
+  vel_theta_max: 0.5
+  following_mode: 1
+
+  distance_error_weight_1_f: 1.0
+  yaw_error_weight_1_f: 0.2
+  distance_error_weight_2_f: 0.2
+  yaw_error_weight_2_f: 0.2
+  distance_error_weight_1_b: 0.6
+  yaw_error_weight_1_b: 0.2
+  distance_error_weight_2_b: 1.0
+  yaw_error_weight_2_b: 0.6
+  rot_vel_weight: 0.2
+  rot_vel_var_weight: 0.2
+  prediction_horizon: 3.0
+
+  towing: true
+  global_frame: $(arg global_frame)
+  robot_base_frame: $(arg robot_base_frame)
+  coupler_frame: $(arg coupler_frame)
+  cart_base_frame: $(arg cart_base_frame)

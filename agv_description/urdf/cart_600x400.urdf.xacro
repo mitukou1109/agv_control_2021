@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="cart_600x400" params="parent *joint_origin">
+    <link name="cart_rev_link"/>
+    <joint name="cart_rev_joint" type="revolute">
+      <xacro:insert_block name="joint_origin"/>
+      <axis xyz="0 0 1"/>
+      <parent link="${parent}"/>
+      <child link="cart_rev_link"/>
+      <limit lower="${radians(-60)}" upper="${radians(60)}" effort="0" velocity="0"/>
+    </joint>
+    <xacro:body prefix="cart" parent="cart_rev_link" mesh="cart_600x400_center" color="Yellow">
+    <!-- <xacro:body prefix="cart" parent="cart_rev_link" mesh="cart_600x400_center" color="Yellow" geometry_rpy="0 0 ${radians(-180)}"> -->
+      <origin xyz="-0.35 0 0" rpy="0 0 0"/>
+      <!-- <origin xyz="-0.35 0 0" rpy="0 0 ${radians(180)}"/> -->
+      <inertial>
+        <origin xyz="-0.341 0 0.0230"/>
+        <mass value="35.5"/>
+        <inertia ixx="7.04e-1" ixy="6.83e-16" ixz="4.10e-3" iyy="1.50e+0" iyz="2.35e-16" izz="2.14e+0"/>
+      </inertial>
+    </xacro:body>
+    <xacro:caster prefix="cart_front_left" parent="cart_body_link" radius="0.0375" width="0.02" mass="0.30">
+      <!-- <origin xyz="-0.205 -0.125 -0.04" rpy="${radians(-90)} 0 ${radians(-180)}"/> -->
+      <origin xyz="-0.205 -0.125 -0.04" rpy="${radians(-90)} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </xacro:caster>
+    <xacro:caster prefix="cart_front_right" parent="cart_body_link" radius="0.0375" width="0.02" mass="0.30">
+      <origin xyz="-0.205 0.125 -0.04" rpy="${radians(-90)} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </xacro:caster>
+    <xacro:caster prefix="cart_rear_left" parent="cart_body_link" radius="0.0375" width="0.02" mass="0.30">
+      <origin xyz="0.205 -0.125 -0.04" rpy="${radians(-90)} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </xacro:caster>
+    <xacro:caster prefix="cart_rear_right" parent="cart_body_link" radius="0.0375" width="0.02" mass="0.30">
+      <origin xyz="0.205 0.125 -0.04" rpy="${radians(-90)} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </xacro:caster>
+  </xacro:macro>
+</robot>

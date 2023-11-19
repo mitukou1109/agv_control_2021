@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="caster" params="prefix parent radius width mass *joint_origin *joint_axis">
+    <link name="${prefix}_caster_link">
+      <visual>
+        <geometry>
+          <cylinder radius="${radius}" length="${width}"/>
+        </geometry>
+        <material name="Orange"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="${radius}" length="${width}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0 0 0"/>
+        <mass value="${mass}"/>
+        <inertia ixx="${mass*(radius**2/4+width**2/12)}" ixy="0" ixz="0" iyy="${mass*(radius**2/4+width**2/12)}" iyz="0" izz="${mass*radius**2/2}"/>
+      </inertial>
+    </link>
+    <joint name="${prefix}_caster_joint" type="continuous">
+      <xacro:insert_block name="joint_origin"/>
+      <xacro:insert_block name="joint_axis"/>
+      <parent link="${parent}"/>
+      <child link="${prefix}_caster_link"/>
+    </joint>
+    <gazebo reference="${prefix}_caster_link">
+      <material>Gazebo/Orange</material>
+      <mu1 value="0.5"/>
+      <mu2 value="0.5"/>
+      <kp value="1000000"/>
+      <kd value="100000"/>
+      <dampingFactor value="0.1"/>
+    </gazebo>
+  </xacro:macro>
+</robot>
